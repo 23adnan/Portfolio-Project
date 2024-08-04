@@ -10,9 +10,6 @@ scaler = joblib.load('scaler.pkl')
 
 # Define a preprocessing function
 def preprocess_data(data):
-    """
-    Preprocess the incoming data by applying log transformation to srcbytes and dstbytes.
-    """
     data = data.copy()
     data['log_srcbytes'] = np.log1p(data['srcbytes'])
     data['log_dstbytes'] = np.log1p(data['dstbytes'])
@@ -23,12 +20,30 @@ def preprocess_data(data):
 def main():
     st.title("Network Anomaly Detection")
 
+    # Protocols
+    protocols = ['tcp', 'udp', 'icmp']
+    # Services
+    services = [
+        'ftp_data', 'other', 'private', 'http', 'remote_job', 'name', 'netbios_ns',
+        'eco_i', 'mtp', 'telnet', 'finger', 'domain_u', 'supdup', 'uucp_path',
+        'Z39_50', 'smtp', 'csnet_ns', 'uucp', 'netbios_dgm', 'urp_i', 'auth',
+        'domain', 'ftp', 'bgp', 'ldap', 'ecr_i', 'gopher', 'vmnet', 'systat',
+        'http_443', 'efs', 'whois', 'imap4', 'iso_tsap', 'echo', 'klogin', 'link',
+        'sunrpc', 'login', 'kshell', 'sql_net', 'time', 'hostnames', 'exec',
+        'ntp_u', 'discard', 'nntp', 'courier', 'ctf', 'ssh', 'daytime', 'shell',
+        'netstat', 'pop_3', 'nnsp', 'IRC', 'pop_2', 'printer', 'tim_i', 'pm_dump',
+        'red_i', 'netbios_ssn', 'rje', 'X11', 'urh_i', 'http_8001', 'aol',
+        'http_2784', 'tftp_u', 'harvest'
+    ]
+    # Flags
+    flags = ['SF', 'S0', 'REJ', 'RSTR', 'SH', 'RSTO', 'S1', 'RSTOS0', 'S3', 'S2', 'OTH']
+
     # User input fields
-    srcbytes = st.number_input('Source Bytes')
-    dstbytes = st.number_input('Destination Bytes')
-    protocoltype = st.selectbox('Protocol Type', ['tcp', 'udp', 'icmp'])
-    service = st.selectbox('Service', ['http', 'ftp', 'smtp', 'dns', 'other'])
-    flag = st.selectbox('Flag', ['SF', 'S1', 'REJ', 'RSTO', 'other'])
+    srcbytes = st.number_input('Source Bytes', min_value=0.0, step=1.0)
+    dstbytes = st.number_input('Destination Bytes', min_value=0.0, step=1.0)
+    protocoltype = st.selectbox('Protocol Type', protocols)
+    service = st.selectbox('Service', services)
+    flag = st.selectbox('Flag', flags)
 
     # Create a DataFrame from user inputs
     input_data = pd.DataFrame({
