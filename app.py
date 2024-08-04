@@ -39,9 +39,10 @@ def main():
     flags = ['SF', 'S0', 'REJ', 'RSTR', 'SH', 'RSTO', 'S1', 'RSTOS0', 'S3', 'S2', 'OTH']
 
     # User input fields
-    # User input fields
+   # User input fields
     srcbytes = st.number_input('Source Bytes', min_value=0.0, step=1.0, help="Total number of data bytes from source to destination.")
     dstbytes = st.number_input('Destination Bytes', min_value=0.0, step=1.0, help="Total number of data bytes from destination to source.")
+    duration = st.number_input('Duration', min_value=0, max_value=42908, step=1, help="Length of time duration of the connection.")
     dsthostsrvcount = st.number_input('Destination Host Service Count', min_value=0, max_value=255, step=1, help="Number of connections having the same port number.")
     loggedin = st.selectbox('Logged In', [0, 1], format_func=lambda x: 'No' if x == 0 else 'Yes', help="Indicates if the connection is from a logged-in user.")
     dsthostdiffsrvrate = st.number_input('Destination Host Different Server Rate', min_value=0.0, max_value=1.0, step=0.01, help="Rate of connections to different services on the same host.")
@@ -57,6 +58,7 @@ def main():
     input_data = pd.DataFrame({
         'srcbytes': [srcbytes],
         'dstbytes': [dstbytes],
+        'duration': [duration],
         'dsthostsrvcount': [dsthostsrvcount],
         'loggedin': [loggedin],
         'dsthostdiffsrvrate': [dsthostdiffsrvrate],
@@ -68,7 +70,6 @@ def main():
         'service_' + service: [1],
         'flag_' + flag: [1]
     })
-
 
 
     # Fill missing dummy columns with 0
