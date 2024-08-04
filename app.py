@@ -46,7 +46,7 @@ def main():
         service = st.selectbox('Service', services, help="Network service on the destination, e.g., http, ftp, smtp, etc.")
     with col3:
         flag = st.selectbox('Flag', flags, help="Normal or error status of the connection.")
-
+    
     col4, col5, col6 = st.columns(3)  # Split the layout into three columns for duration, source, and destination bytes
     with col4:
         duration = st.number_input('Duration', min_value=0, max_value=42908, step=1, help="Length of time duration of the connection.")
@@ -54,7 +54,7 @@ def main():
         srcbytes = st.number_input('Source Bytes', min_value=0.0, step=1.0, help="Total number of data bytes from source to destination.")
     with col6:
         dstbytes = st.number_input('Destination Bytes', min_value=0.0, step=1.0, help="Total number of data bytes from destination to source.")
-
+    
     dsthostsrvcount = st.number_input('Destination Host Service Count', min_value=0, max_value=255, step=1, help="Number of connections having the same port number.")
     loggedin = st.selectbox('Logged In', [0, 1], format_func=lambda x: 'No' if x == 0 else 'Yes', help="Indicates if the connection is from a logged-in user.")
     dsthostdiffsrvrate = st.number_input('Destination Host Different Server Rate', min_value=0.0, max_value=1.0, step=0.01, help="Rate of connections to different services on the same host.")
@@ -73,12 +73,14 @@ def main():
     srvrerrorrate = st.number_input('Server Error Rate', min_value=0.0, max_value=1.0, step=0.01, help="Percentage of connections that have activated the flag REJ, among the connections aggregated in srv_count.")
     srvdiffhostrate = st.number_input('Server Different Host Rate', min_value=0.0, max_value=1.0, step=0.01, help="Percentage of connections that were to different destination machines, among the connections aggregated in srv_count.")
     lastflag = st.number_input('Last Flag', min_value=0, max_value=21, step=1, help="Total number of last flags in this connection.")
+    rootshell = st.selectbox('Root Shell Obtained', [0, 1], format_func=lambda x: 'No' if x == 0 else 'Yes', help="Indicator if root shell is obtained (1 if yes, 0 otherwise).")
+
 
     # Create a DataFrame from user inputs
     input_data = pd.DataFrame({
+        'duration': [duration],
         'srcbytes': [srcbytes],
         'dstbytes': [dstbytes],
-        'duration': [duration],
         'dsthostsrvcount': [dsthostsrvcount],
         'loggedin': [loggedin],
         'dsthostdiffsrvrate': [dsthostdiffsrvrate],
@@ -97,10 +99,12 @@ def main():
         'srvrerrorrate': [srvrerrorrate],
         'srvdiffhostrate': [srvdiffhostrate],
         'lastflag': [lastflag],
+        'rootshell': [rootshell],
         'protocoltype_' + protocoltype: [1],
         'service_' + service: [1],
         'flag_' + flag: [1]
     })
+
     
     # Fill missing dummy columns with 0
     expected_columns = model.feature_importances_.shape[0]  # or you can use a predefined list
