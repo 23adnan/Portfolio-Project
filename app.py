@@ -129,6 +129,9 @@ def main():
     # Preprocess the input data
     preprocessed_data = preprocess_data(input_data)
 
+    # Scale the data
+    preprocessed_data_scaled = scaler.transform(preprocessed_data)
+
     # Predict button
     if st.button('Predict'):
         # Make prediction
