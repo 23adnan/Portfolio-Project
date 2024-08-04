@@ -5,7 +5,7 @@ import joblib
 from sklearn.preprocessing import StandardScaler
 
 # Load the model and scaler
-model = joblib.load('best_rf_model.pkl')
+model = joblib.load('random_forest_model.pkl')
 scaler = joblib.load('scaler.pkl')
 
 # Define a preprocessing function
