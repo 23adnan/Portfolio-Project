@@ -43,18 +43,23 @@ def main():
     dstbytes = st.number_input('Destination Bytes', min_value=0.0, step=1.0, help="Total number of data bytes from destination to source.")
     dsthostsrvcount = st.number_input('Destination Host Service Count', min_value=0, max_value=255, step=1, help="Number of connections having the same port number.")
     loggedin = st.selectbox('Logged In', [0, 1], format_func=lambda x: 'No' if x == 0 else 'Yes', help="Indicates if the connection is from a logged-in user.")
+    dsthostdiffsrvrate = st.number_input('Destination Host Different Server Rate', min_value=0.0, max_value=1.0, step=0.01, help="Rate of connections to different services on the same host.")
     protocoltype = st.selectbox('Protocol Type', protocols, help="Type of protocol used in the connection.")
     service = st.selectbox('Service', services, help="Network service on the destination, e.g., http, ftp, smtp, etc.")
     flag = st.selectbox('Flag', flags, help="Normal or error status of the connection.")
-
+    
     # Create a DataFrame from user inputs
     input_data = pd.DataFrame({
         'srcbytes': [srcbytes],
         'dstbytes': [dstbytes],
+        'dsthostsrvcount': [dsthostsrvcount],
+        'loggedin': [loggedin],
+        'dsthostdiffsrvrate': [dsthostdiffsrvrate],
         'protocoltype_' + protocoltype: [1],
         'service_' + service: [1],
         'flag_' + flag: [1]
     })
+
 
     # Fill missing dummy columns with 0
     expected_columns = model.feature_importances_.shape[0]  # or you can use a predefined list
