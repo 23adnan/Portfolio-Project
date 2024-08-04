@@ -39,10 +39,18 @@ def main():
     flags = ['SF', 'S0', 'REJ', 'RSTR', 'SH', 'RSTO', 'S1', 'RSTOS0', 'S3', 'S2', 'OTH']
     
     # User input fields
-    col1, col2 = st.columns(2)  # Split the layout into two columns
+    col1, col2, col3 = st.columns(3)  # Create three columns for Protocol Type, Service, and Flag
     with col1:
-        srcbytes = st.number_input('Source Bytes', min_value=0.0, step=1.0, help="Total number of data bytes from source to destination.")
+        protocoltype = st.selectbox('Protocol Type', protocols, help="Type of protocol used in the connection.")
     with col2:
+        service = st.selectbox('Service', services, help="Network service on the destination, e.g., http, ftp, smtp, etc.")
+    with col3:
+        flag = st.selectbox('Flag', flags, help="Normal or error status of the connection.")
+
+    col4, col5 = st.columns(2)  # Split the layout into two columns
+    with col4:
+        srcbytes = st.number_input('Source Bytes', min_value=0.0, step=1.0, help="Total number of data bytes from source to destination.")
+    with col5:
         dstbytes = st.number_input('Destination Bytes', min_value=0.0, step=1.0, help="Total number of data bytes from destination to source.")
 
     duration = st.number_input('Duration', min_value=0, max_value=42908, step=1, help="Length of time duration of the connection.")
@@ -58,9 +66,7 @@ def main():
     dsthostsamesrvrate = st.number_input('Destination Host Same Service Rate', min_value=0.0, max_value=1.0, step=0.01, help="Percentage of connections to the same service among connections aggregated in dst_host_count.")
     dsthostsrvserrorrate = st.number_input('Destination Host Service Error Rate', min_value=0.0, max_value=1.0, step=0.01, help="Percentage of connections with the flag s0, s1, s2, or s3 among connections aggregated in dst_host_srv_count.")
     numaccessfiles = st.number_input('Number of Access Files', min_value=0, max_value=10, step=1, help="Number of operations on access control files.")
-    protocoltype = st.selectbox('Protocol Type', protocols, help="Type of protocol used in the connection.")
-    service = st.selectbox('Service', services, help="Network service on the destination, e.g., http, ftp, smtp, etc.")
-    flag = st.selectbox('Flag', flags, help="Normal or error status of the connection.")
+    numfailedlogins = st.number_input('Number of Failed Logins', min_value=0, max_value=5, step=1, help="Count of failed login attempts.")
 
     # Create a DataFrame from user inputs
     input_data = pd.DataFrame({
@@ -79,11 +85,11 @@ def main():
         'dsthostsamesrvrate': [dsthostsamesrvrate],
         'dsthostsrvserrorrate': [dsthostsrvserrorrate],
         'numaccessfiles': [numaccessfiles],
+        'numfailedlogins': [numfailedlogins],
         'protocoltype_' + protocoltype: [1],
         'service_' + service: [1],
         'flag_' + flag: [1]
     })
-
 
     # Fill missing dummy columns with 0
     expected_columns = model.feature_importances_.shape[0]  # or you can use a predefined list
