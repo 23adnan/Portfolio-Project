@@ -39,9 +39,13 @@ def main():
     flags = ['SF', 'S0', 'REJ', 'RSTR', 'SH', 'RSTO', 'S1', 'RSTOS0', 'S3', 'S2', 'OTH']
 
     # User input fields
-    protocoltype = st.selectbox('Protocol Type', protocols)
-    service = st.selectbox('Service', services)
-    flag = st.selectbox('Flag', flags)
+   col1, col2, col3 = st.columns(3)
+    with col1:
+        protocoltype = st.selectbox('Protocol Type', protocols)
+    with col2:
+        service = st.selectbox('Service', services)
+    with col3:
+        flag = st.selectbox('Flag', flags)
 
     duration = st.number_input('Duration', min_value=0, max_value=42908, step=1)
     srcbytes = st.number_input('Source Bytes', min_value=0, step=1)
@@ -75,6 +79,7 @@ def main():
     numcompromised = st.number_input('Num Compromised', min_value=0, max_value=10000, step=1)
     isguestlogin = st.selectbox('Is Guest Login', [0, 1])
     rootshell = st.selectbox('Root Shell', [0, 1])
+    dsthostsrvrerrorrate = st.slider('Dst Host Srv Rerror Rate', min_value=0.0, max_value=1.0, step=0.01)
 
     # Create a DataFrame from user inputs
     input_data = pd.DataFrame({
@@ -105,7 +110,8 @@ def main():
         'rootshell': [rootshell],
         'protocoltype_' + protocoltype: [1],
         'service_' + service: [1],
-        'flag_' + flag: [1]
+        'flag_' + flag: [1],
+        'dsthostsrvrerrorrate': [dsthostsrvrerrorrate]
     })
 
     # Fill missing dummy columns with 0
