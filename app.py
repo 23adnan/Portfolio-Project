@@ -69,6 +69,9 @@ def main():
     numaccessfiles = st.number_input('Number of Access Files', min_value=0, max_value=10, step=1, help="Number of operations on access control files.")
     numfailedlogins = st.number_input('Number of Failed Logins', min_value=0, max_value=5, step=1, help="Count of failed login attempts.")
     wrongfragment = st.number_input('Wrong Fragment', min_value=0, max_value=3, step=1, help="Total number of wrong fragments in this connection.")
+    numroot = st.number_input('Number of Root Accesses', min_value=0, max_value=10000, step=1, help="Number of 'root' accesses or operations performed as root in the connection.")
+    srvrerrorrate = st.number_input('Server Error Rate', min_value=0.0, max_value=1.0, step=0.01, help="Percentage of connections that have activated the flag REJ, among the connections aggregated in srv_count.")
+    srvdiffhostrate = st.number_input('Server Different Host Rate', min_value=0.0, max_value=1.0, step=0.01, help="Percentage of connections that were to different destination machines, among the connections aggregated in srv_count.")
 
     # Create a DataFrame from user inputs
     input_data = pd.DataFrame({
@@ -89,10 +92,14 @@ def main():
         'numaccessfiles': [numaccessfiles],
         'numfailedlogins': [numfailedlogins],
         'wrongfragment': [wrongfragment],
+        'numroot': [numroot],
+        'srvrerrorrate': [srvrerrorrate],
+        'srvdiffhostrate': [srvdiffhostrate],
         'protocoltype_' + protocoltype: [1],
         'service_' + service: [1],
         'flag_' + flag: [1]
     })
+    
     # Fill missing dummy columns with 0
     expected_columns = model.feature_importances_.shape[0]  # or you can use a predefined list
     missing_cols = set(expected_columns) - set(input_data.columns)
