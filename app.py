@@ -7,6 +7,8 @@ from sklearn.preprocessing import StandardScaler
 # Load the model and scaler
 model = joblib.load('random_forest_model.pkl')
 scaler = joblib.load('scaler.pkl')
+with open('feature_names.pkl', 'rb') as f:
+    feature_names = pickle.load(f)
 
 # Define a preprocessing function
 def preprocess_data(data):
@@ -115,13 +117,13 @@ def main():
     })
 
     # Fill missing dummy columns with 0
-    expected_columns = set(X_train.columns)  # Replace with your actual feature names if needed
+    expected_columns = set(feature_names)  # Use loaded feature names
     missing_cols = expected_columns - set(input_data.columns)
     for c in missing_cols:
         input_data[c] = 0
 
     # Reorder columns to match training set order
-    input_data = input_data[X_train.columns]
+    input_data = input_data[feature_names]
 
     # Preprocess the input data
     preprocessed_data = preprocess_data(input_data)
