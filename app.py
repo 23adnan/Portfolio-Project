@@ -72,6 +72,7 @@ def main():
     numroot = st.number_input('Number of Root Accesses', min_value=0, max_value=10000, step=1, help="Number of 'root' accesses or operations performed as root in the connection.")
     srvrerrorrate = st.number_input('Server Error Rate', min_value=0.0, max_value=1.0, step=0.01, help="Percentage of connections that have activated the flag REJ, among the connections aggregated in srv_count.")
     srvdiffhostrate = st.number_input('Server Different Host Rate', min_value=0.0, max_value=1.0, step=0.01, help="Percentage of connections that were to different destination machines, among the connections aggregated in srv_count.")
+    lastflag = st.number_input('Last Flag', min_value=0, max_value=21, step=1, help="Total number of last flags in this connection.")
 
     # Create a DataFrame from user inputs
     input_data = pd.DataFrame({
@@ -95,6 +96,7 @@ def main():
         'numroot': [numroot],
         'srvrerrorrate': [srvrerrorrate],
         'srvdiffhostrate': [srvdiffhostrate],
+        'lastflag': [lastflag],
         'protocoltype_' + protocoltype: [1],
         'service_' + service: [1],
         'flag_' + flag: [1]
