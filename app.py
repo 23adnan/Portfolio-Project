@@ -39,11 +39,16 @@ def main():
     flags = ['SF', 'S0', 'REJ', 'RSTR', 'SH', 'RSTO', 'S1', 'RSTOS0', 'S3', 'S2', 'OTH']
 
     # User input fields
+    # User input fields
     srcbytes = st.number_input('Source Bytes', min_value=0.0, step=1.0, help="Total number of data bytes from source to destination.")
     dstbytes = st.number_input('Destination Bytes', min_value=0.0, step=1.0, help="Total number of data bytes from destination to source.")
     dsthostsrvcount = st.number_input('Destination Host Service Count', min_value=0, max_value=255, step=1, help="Number of connections having the same port number.")
     loggedin = st.selectbox('Logged In', [0, 1], format_func=lambda x: 'No' if x == 0 else 'Yes', help="Indicates if the connection is from a logged-in user.")
     dsthostdiffsrvrate = st.number_input('Destination Host Different Server Rate', min_value=0.0, max_value=1.0, step=0.01, help="Rate of connections to different services on the same host.")
+    dsthostserrorrate = st.number_input('Destination Host Error Rate', min_value=0.0, max_value=1.0, step=0.01, help="Rate of connections with errors to the same destination host.")
+    count = st.number_input('Count', min_value=0, max_value=1000, step=1, help="Number of connections to the same destination host as the current connection in the past two seconds.")
+    srvcount = st.number_input('Service Count', min_value=0, max_value=1000, step=1, help="Number of connections to the same service as the current connection in the past two seconds.")
+    dsthostsamesrcportrate = st.number_input('Destination Host Same Source Port Rate', min_value=0.0, max_value=1.0, step=0.01, help="Percentage of connections that were to the same source port, among the connections aggregated in dst_host_srv_count.")
     protocoltype = st.selectbox('Protocol Type', protocols, help="Type of protocol used in the connection.")
     service = st.selectbox('Service', services, help="Network service on the destination, e.g., http, ftp, smtp, etc.")
     flag = st.selectbox('Flag', flags, help="Normal or error status of the connection.")
@@ -55,10 +60,15 @@ def main():
         'dsthostsrvcount': [dsthostsrvcount],
         'loggedin': [loggedin],
         'dsthostdiffsrvrate': [dsthostdiffsrvrate],
+        'dsthostserrorrate': [dsthostserrorrate],
+        'count': [count],
+        'srvcount': [srvcount],
+        'dsthostsamesrcportrate': [dsthostsamesrcportrate],
         'protocoltype_' + protocoltype: [1],
         'service_' + service: [1],
         'flag_' + flag: [1]
     })
+
 
 
     # Fill missing dummy columns with 0
