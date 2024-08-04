@@ -37,11 +37,14 @@ def main():
     ]
     # Flags
     flags = ['SF', 'S0', 'REJ', 'RSTR', 'SH', 'RSTO', 'S1', 'RSTOS0', 'S3', 'S2', 'OTH']
-
+    
     # User input fields
-   # User input fields
-    srcbytes = st.number_input('Source Bytes', min_value=0.0, step=1.0, help="Total number of data bytes from source to destination.")
-    dstbytes = st.number_input('Destination Bytes', min_value=0.0, step=1.0, help="Total number of data bytes from destination to source.")
+    col1, col2 = st.columns(2)  # Split the layout into two columns
+    with col1:
+        srcbytes = st.number_input('Source Bytes', min_value=0.0, step=1.0, help="Total number of data bytes from source to destination.")
+    with col2:
+        dstbytes = st.number_input('Destination Bytes', min_value=0.0, step=1.0, help="Total number of data bytes from destination to source.")
+
     duration = st.number_input('Duration', min_value=0, max_value=42908, step=1, help="Length of time duration of the connection.")
     dsthostsrvcount = st.number_input('Destination Host Service Count', min_value=0, max_value=255, step=1, help="Number of connections having the same port number.")
     loggedin = st.selectbox('Logged In', [0, 1], format_func=lambda x: 'No' if x == 0 else 'Yes', help="Indicates if the connection is from a logged-in user.")
@@ -50,10 +53,15 @@ def main():
     count = st.number_input('Count', min_value=0, max_value=1000, step=1, help="Number of connections to the same destination host as the current connection in the past two seconds.")
     srvcount = st.number_input('Service Count', min_value=0, max_value=1000, step=1, help="Number of connections to the same service as the current connection in the past two seconds.")
     dsthostsamesrcportrate = st.number_input('Destination Host Same Source Port Rate', min_value=0.0, max_value=1.0, step=0.01, help="Percentage of connections that were to the same source port, among the connections aggregated in dst_host_srv_count.")
+    serrorrate = st.number_input('Serror Rate', min_value=0.0, max_value=1.0, step=0.01, help="Percentage of connections with the flag s0, s1, s2, or s3 among connections aggregated in count.")
+    dsthostcount = st.number_input('Destination Host Count', min_value=0, max_value=255, step=1, help="Number of connections with the same destination host IP address.")
+    dsthostsamesrvrate = st.number_input('Destination Host Same Service Rate', min_value=0.0, max_value=1.0, step=0.01, help="Percentage of connections to the same service among connections aggregated in dst_host_count.")
+    dsthostsrvserrorrate = st.number_input('Destination Host Service Error Rate', min_value=0.0, max_value=1.0, step=0.01, help="Percentage of connections with the flag s0, s1, s2, or s3 among connections aggregated in dst_host_srv_count.")
+    numaccessfiles = st.number_input('Number of Access Files', min_value=0, max_value=10, step=1, help="Number of operations on access control files.")
     protocoltype = st.selectbox('Protocol Type', protocols, help="Type of protocol used in the connection.")
     service = st.selectbox('Service', services, help="Network service on the destination, e.g., http, ftp, smtp, etc.")
     flag = st.selectbox('Flag', flags, help="Normal or error status of the connection.")
-    
+
     # Create a DataFrame from user inputs
     input_data = pd.DataFrame({
         'srcbytes': [srcbytes],
@@ -66,6 +74,11 @@ def main():
         'count': [count],
         'srvcount': [srvcount],
         'dsthostsamesrcportrate': [dsthostsamesrcportrate],
+        'serrorrate': [serrorrate],
+        'dsthostcount': [dsthostcount],
+        'dsthostsamesrvrate': [dsthostsamesrvrate],
+        'dsthostsrvserrorrate': [dsthostsrvserrorrate],
+        'numaccessfiles': [numaccessfiles],
         'protocoltype_' + protocoltype: [1],
         'service_' + service: [1],
         'flag_' + flag: [1]
