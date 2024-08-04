@@ -5,7 +5,7 @@ import joblib
 from sklearn.preprocessing import StandardScaler
 
 # Load the model and scaler
-model = joblib.load('random_forest_model.pkl')
+model = joblib.load('best_rf_model.pkl')
 scaler = joblib.load('scaler.pkl')
 
 # Define a preprocessing function
@@ -37,44 +37,44 @@ def main():
     ]
     # Flags
     flags = ['SF', 'S0', 'REJ', 'RSTR', 'SH', 'RSTO', 'S1', 'RSTOS0', 'S3', 'S2', 'OTH']
-    
-    # User input fields
-    col1, col2, col3 = st.columns(3)  # Create three columns for Protocol Type, Service, and Flag
-    with col1:
-        protocoltype = st.selectbox('Protocol Type', protocols, help="Type of protocol used in the connection.")
-    with col2:
-        service = st.selectbox('Service', services, help="Network service on the destination, e.g., http, ftp, smtp, etc.")
-    with col3:
-        flag = st.selectbox('Flag', flags, help="Normal or error status of the connection.")
-    
-    col4, col5, col6 = st.columns(3)  # Split the layout into three columns for duration, source, and destination bytes
-    with col4:
-        duration = st.number_input('Duration', min_value=0, max_value=42908, step=1, help="Length of time duration of the connection.")
-    with col5:
-        srcbytes = st.number_input('Source Bytes', min_value=0.0, step=1.0, help="Total number of data bytes from source to destination.")
-    with col6:
-        dstbytes = st.number_input('Destination Bytes', min_value=0.0, step=1.0, help="Total number of data bytes from destination to source.")
-    
-    dsthostsrvcount = st.number_input('Destination Host Service Count', min_value=0, max_value=255, step=1, help="Number of connections having the same port number.")
-    loggedin = st.selectbox('Logged In', [0, 1], format_func=lambda x: 'No' if x == 0 else 'Yes', help="Indicates if the connection is from a logged-in user.")
-    dsthostdiffsrvrate = st.number_input('Destination Host Different Server Rate', min_value=0.0, max_value=1.0, step=0.01, help="Rate of connections to different services on the same host.")
-    dsthostserrorrate = st.number_input('Destination Host Error Rate', min_value=0.0, max_value=1.0, step=0.01, help="Rate of connections with errors to the same destination host.")
-    count = st.number_input('Count', min_value=0, max_value=1000, step=1, help="Number of connections to the same destination host as the current connection in the past two seconds.")
-    srvcount = st.number_input('Service Count', min_value=0, max_value=1000, step=1, help="Number of connections to the same service as the current connection in the past two seconds.")
-    dsthostsamesrcportrate = st.number_input('Destination Host Same Source Port Rate', min_value=0.0, max_value=1.0, step=0.01, help="Percentage of connections that were to the same source port, among the connections aggregated in dst_host_srv_count.")
-    serrorrate = st.number_input('Serror Rate', min_value=0.0, max_value=1.0, step=0.01, help="Percentage of connections with the flag s0, s1, s2, or s3 among connections aggregated in count.")
-    dsthostcount = st.number_input('Destination Host Count', min_value=0, max_value=255, step=1, help="Number of connections with the same destination host IP address.")
-    dsthostsamesrvrate = st.number_input('Destination Host Same Service Rate', min_value=0.0, max_value=1.0, step=0.01, help="Percentage of connections to the same service among connections aggregated in dst_host_count.")
-    dsthostsrvserrorrate = st.number_input('Destination Host Service Error Rate', min_value=0.0, max_value=1.0, step=0.01, help="Percentage of connections with the flag s0, s1, s2, or s3 among connections aggregated in dst_host_srv_count.")
-    numaccessfiles = st.number_input('Number of Access Files', min_value=0, max_value=10, step=1, help="Number of operations on access control files.")
-    numfailedlogins = st.number_input('Number of Failed Logins', min_value=0, max_value=5, step=1, help="Count of failed login attempts.")
-    wrongfragment = st.number_input('Wrong Fragment', min_value=0, max_value=3, step=1, help="Total number of wrong fragments in this connection.")
-    numroot = st.number_input('Number of Root Accesses', min_value=0, max_value=10000, step=1, help="Number of 'root' accesses or operations performed as root in the connection.")
-    srvrerrorrate = st.number_input('Server Error Rate', min_value=0.0, max_value=1.0, step=0.01, help="Percentage of connections that have activated the flag REJ, among the connections aggregated in srv_count.")
-    srvdiffhostrate = st.number_input('Server Different Host Rate', min_value=0.0, max_value=1.0, step=0.01, help="Percentage of connections that were to different destination machines, among the connections aggregated in srv_count.")
-    lastflag = st.number_input('Last Flag', min_value=0, max_value=21, step=1, help="Total number of last flags in this connection.")
-    rootshell = st.selectbox('Root Shell Obtained', [0, 1], format_func=lambda x: 'No' if x == 0 else 'Yes', help="Indicator if root shell is obtained (1 if yes, 0 otherwise).")
 
+    # User input fields
+    protocoltype = st.selectbox('Protocol Type', protocols)
+    service = st.selectbox('Service', services)
+    flag = st.selectbox('Flag', flags)
+
+    duration = st.number_input('Duration', min_value=0, max_value=42908, step=1)
+    srcbytes = st.number_input('Source Bytes', min_value=0, step=1)
+    dstbytes = st.number_input('Destination Bytes', min_value=0, step=1)
+
+    dsthostsrvcount = st.number_input('Dst Host Srv Count', min_value=0, max_value=255, step=1)
+    loggedin = st.selectbox('Logged In', [0, 1])
+    dsthostdiffsrvrate = st.slider('Dst Host Diff Srv Rate', min_value=0.0, max_value=1.0, step=0.01)
+    dsthostserrorrate = st.slider('Dst Host Serror Rate', min_value=0.0, max_value=1.0, step=0.01)
+
+    count = st.number_input('Count', min_value=0, max_value=1000, step=1)
+    srvcount = st.number_input('Srv Count', min_value=0, max_value=511, step=1)
+    dsthostsamesrcportrate = st.slider('Dst Host Same Src Port Rate', min_value=0.0, max_value=1.0, step=0.01)
+
+    serrorrate = st.slider('Serror Rate', min_value=0.0, max_value=1.0, step=0.01)
+    dsthostcount = st.number_input('Dst Host Count', min_value=0, max_value=255, step=1)
+    dsthostsamesrvrate = st.slider('Dst Host Same Srv Rate', min_value=0.0, max_value=1.0, step=0.01)
+
+    dsthostsrvserrorrate = st.slider('Dst Host Srv Serror Rate', min_value=0.0, max_value=1.0, step=0.01)
+    numaccessfiles = st.number_input('Num Access Files', min_value=0, max_value=10, step=1)
+    numfailedlogins = st.number_input('Num Failed Logins', min_value=0, max_value=5, step=1)
+
+    wrongfragment = st.number_input('Wrong Fragment', min_value=0, max_value=3, step=1)
+    numroot = st.number_input('Num Root', min_value=0, max_value=10000, step=1)
+    srvrerrorrate = st.slider('Srv Rerror Rate', min_value=0.0, max_value=1.0, step=0.01)
+
+    srvdiffhostrate = st.slider('Srv Diff Host Rate', min_value=0.0, max_value=1.0, step=0.01)
+    lastflag = st.number_input('Last Flag', min_value=0, max_value=21, step=1)
+    hot = st.number_input('Hot', min_value=0, max_value=100, step=1)
+
+    numcompromised = st.number_input('Num Compromised', min_value=0, max_value=10000, step=1)
+    isguestlogin = st.selectbox('Is Guest Login', [0, 1])
+    rootshell = st.selectbox('Root Shell', [0, 1])
 
     # Create a DataFrame from user inputs
     input_data = pd.DataFrame({
@@ -99,18 +99,23 @@ def main():
         'srvrerrorrate': [srvrerrorrate],
         'srvdiffhostrate': [srvdiffhostrate],
         'lastflag': [lastflag],
+        'hot': [hot],
+        'numcompromised': [numcompromised],
+        'isguestlogin': [isguestlogin],
         'rootshell': [rootshell],
         'protocoltype_' + protocoltype: [1],
         'service_' + service: [1],
         'flag_' + flag: [1]
     })
 
-    
     # Fill missing dummy columns with 0
-    expected_columns = model.feature_importances_.shape[0]  # or you can use a predefined list
-    missing_cols = set(expected_columns) - set(input_data.columns)
+    expected_columns = set(X_train.columns)  # Replace with your actual feature names if needed
+    missing_cols = expected_columns - set(input_data.columns)
     for c in missing_cols:
         input_data[c] = 0
+
+    # Reorder columns to match training set order
+    input_data = input_data[X_train.columns]
 
     # Preprocess the input data
     preprocessed_data = preprocess_data(input_data)
@@ -118,11 +123,13 @@ def main():
     # Scale the data
     preprocessed_data_scaled = scaler.transform(preprocessed_data)
 
-    # Make prediction
-    prediction = model.predict(preprocessed_data_scaled)
+    # Predict button
+    if st.button('Predict'):
+        # Make prediction
+        prediction = model.predict(preprocessed_data_scaled)
 
-    # Display the prediction
-    st.write("Predicted Attack Type:", prediction[0])
+        # Display the prediction
+        st.write("Predicted Attack Type:", prediction[0])
 
 if __name__ == "__main__":
     main()
