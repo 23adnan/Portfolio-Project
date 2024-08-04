@@ -42,6 +42,7 @@ def main():
     srcbytes = st.number_input('Source Bytes', min_value=0.0, step=1.0)
     dstbytes = st.number_input('Destination Bytes', min_value=0.0, step=1.0)
     protocoltype = st.selectbox('Protocol Type', protocols)
+    dsthostsrvcount = st.number_input('Destination Host Service Count', min_value=0, max_value=255, step=1)
     service = st.selectbox('Service', services)
     flag = st.selectbox('Flag', flags)
 
