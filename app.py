@@ -39,7 +39,7 @@ def main():
     flags = ['SF', 'S0', 'REJ', 'RSTR', 'SH', 'RSTO', 'S1', 'RSTOS0', 'S3', 'S2', 'OTH']
 
     # User input fields
-   col1, col2, col3 = st.columns(3)
+    col1, col2, col3 = st.columns(3)
     with col1:
         protocoltype = st.selectbox('Protocol Type', protocols)
     with col2:
